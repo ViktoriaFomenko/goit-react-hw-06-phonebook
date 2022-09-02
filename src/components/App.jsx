@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { add_contact } from 'Redux/actions';
 import { nanoid } from 'nanoid';
 import { ContactForm } from './ContactForm/ContactForm';
 import { ContactList } from './ContactList/ContactList';
@@ -7,6 +9,12 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export const App = () => {
+  const contacts = useSelector(state => state.contacts);
+  const dispatch = useDispatch();
+  const onAddContact = payload => {
+    const action = add_contact(payload);
+    dispatch(action);
+  };
   const [contacts, setContacts] = useState(() => {
     return JSON.parse(localStorage.getItem('contacts')) ?? [];
   });
@@ -55,13 +63,10 @@ export const App = () => {
     <>
       <ToastContainer autoClose={2000} position="top-center" closeOnClick />
       <h1>Phonebook</h1>
-      <ContactForm onSubmit={addContact} />
+      <ContactForm onSubmit={onAddContact} />
       <h2>Contacts</h2>
       <Filter value={filter} onChange={changeFilter} />
-      <ContactList
-        contacts={getVisibleContacts()}
-        deleteContact={deleteContact}
-      />
+      <ContactList contacts={contacts} deleteContact={deleteContact} />
     </>
   );
 };
