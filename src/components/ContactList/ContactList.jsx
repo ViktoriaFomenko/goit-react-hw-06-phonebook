@@ -3,6 +3,7 @@ import css from './ContactList.module.css';
 import { ContactListItem } from 'components/ContactListItem/ContactListItem';
 
 export const ContactList = ({ contacts, deleteContact }) => {
+  console.log(contacts);
   return (
     <ul className={css.list}>
       {contacts.map(({ id, name, number }) => (
