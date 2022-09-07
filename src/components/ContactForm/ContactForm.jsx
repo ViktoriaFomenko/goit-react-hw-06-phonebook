@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { add_contact } from 'redux/contacts/contacts -actions';
 import css from './ContactForm.module.css';
 
 export const ContactForm = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+  const contacts = useSelector(state => state.contacts);
 
   const dispatch = useDispatch();
 
@@ -31,6 +32,15 @@ export const ContactForm = () => {
 
   const handleOnSubmit = event => {
     event.preventDefault();
+    const duplicationName = contacts.find(contact => {
+      return contact.name.toLowerCase() === name.toLowerCase();
+    });
+
+    if (duplicationName) {
+      alert(`${name} is already in contacts.`);
+      return;
+    }
+
     dispatch(add_contact({ name, number }));
     reset();
   };
