@@ -1,25 +1,26 @@
-import { createStore } from 'redux';
-import { ADD_CONTACT, REMOVE_CONTACT } from './type';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import { persistStore, persistReducer } from 'redux-persist';
+import contactsReducer from './contacts/contacts -reducer';
+import filterReducer from './filter/filter -reducer';
+import storage from 'redux-persist/lib/storage';
 
-const initialStore = {
-  contacts: [],
+const rootReducer = combineReducers({
+  contacts: contactsReducer,
+  filter: filterReducer,
+});
+
+const contactsPersistConfig = {
+  key: 'contacts',
+  storage,
+  whitelist: ['contacts'],
 };
-
-const reducer = (store = initialStore, { type, payload }) => {
-  switch (type) {
-    case 'ADD_CONTACT':
-      return { ...store, contacts: [...store.contacts, payload] };
-    case 'REMOVE_CONTACT':
-      const newContacts = store.contacts.filter(({ id }) => id !== payload);
-      return { ...store, contacts: newContacts };
-    default:
-      return store;
-  }
-};
-
-const store = createStore(
-  reducer,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+const persistedContactsReducer = persistReducer(
+  contactsPersistConfig,
+  rootReducer
 );
 
-export default store;
+export const store = configureStore({
+  reducer: persistedContactsReducer,
+});
+
+export const persistore = persistStore(store);

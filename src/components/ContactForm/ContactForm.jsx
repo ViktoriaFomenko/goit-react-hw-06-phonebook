@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { nanoid } from 'nanoid';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { add_contact } from 'redux/contacts/contacts -actions';
 import css from './ContactForm.module.css';
 
-export const ContactForm = ({ onSubmit }) => {
+export const ContactForm = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
-  const nameInputId = nanoid();
-  const numberInputId = nanoid();
+  const dispatch = useDispatch();
 
   const handleChange = event => {
     const { name, value } = event.target;
@@ -31,7 +31,7 @@ export const ContactForm = ({ onSubmit }) => {
 
   const handleOnSubmit = event => {
     event.preventDefault();
-    onSubmit(name, number);
+    dispatch(add_contact({ name, number }));
     reset();
   };
 
@@ -48,7 +48,6 @@ export const ContactForm = ({ onSubmit }) => {
           required
           value={name}
           onChange={handleChange}
-          id={nameInputId}
         />
       </label>
       <label className={css.label}>
@@ -62,7 +61,6 @@ export const ContactForm = ({ onSubmit }) => {
           required
           value={number}
           onChange={handleChange}
-          id={numberInputId}
         />
       </label>
       <button className={css.button} type="submit">
